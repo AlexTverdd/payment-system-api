@@ -17,5 +17,13 @@ func ConnectDB(dsn string) {
 		log.Fatalf("Не удалось подключиться к базе данных: %v", err)
 	}
 	log.Println("Подключение к базе данных выполнено успешно")
+}
 
+// Migrate создает таблицы если они не существуют
+func Migrate() {
+	err := DB.AutoMigrate(&Wallet{}, &Transaction{})
+	if err != nil {
+		log.Fatalf("Миграция базы данных не удалась %v", err)
+	}
+	log.Println("Миграция базы данных успешна")
 }
