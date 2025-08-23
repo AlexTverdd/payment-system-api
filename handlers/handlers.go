@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -56,4 +57,21 @@ func GetBalanceHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"adress": address, "balance": balance})
+}
+
+// GetLastTransactionsHandler обрабатывает GET /api/transactions?count=N
+func GetLastTransactionsHandler(c *gin.Context) {
+	countStr := c.DefaultQuery("count", "10")
+	count, err := strconv.Atoi(countStr)
+	if err != nil || count <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"ошибка": "Неверный 'count' параметр"})
+		return
+	}
+
+	transactions, err := business.GetLastTransactions(count)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"ошибка": "Неудалось получить транзакции"})
+		return
+	}
+	c.JSON(http.StatusOK, transactions)
 }
