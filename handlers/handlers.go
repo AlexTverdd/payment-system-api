@@ -12,7 +12,7 @@ import (
 type SendRequest struct {
 	From   string  `json:"from" binding:"required"`
 	To     string  `json:"to" binding:"required"`
-	Amount float64 `json:"amount" binding:"required,gt=0"`
+	Amount float64 `json:"amount" binding:"required"`
 }
 
 // SendHandler обрабатывает POST /api/send
