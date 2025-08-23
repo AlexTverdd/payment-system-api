@@ -1,6 +1,9 @@
 package database
 
 import (
+	"time"
+
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -22,6 +25,16 @@ type Transaction struct {
 	ToAddress string
 	//Amount сумма перевода
 	Amount float64
+	//Timestamp - время создания транзакции.
+	Timestamp time.Time
 	//UUID уникальный идентификатор транзакции
 	UUID string `gorm:"unique;not null"`
+}
+
+// BeforeCreate - метод, который автоматически генерирует уникальный UUID и
+// устанавливает временную метку перед сохранением транзакции
+func (t *Transaction) BeforeCreate(tx *gorm.DB) (err error) {
+	t.UUID = uuid.New().String()
+	t.Timestamp = time.Now()
+	return
 }
