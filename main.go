@@ -30,6 +30,7 @@ func main() {
 	{
 		apiRoutes.POST("/send", handlers.SendHandler)
 		apiRoutes.GET("/wallet/:address/balance", handlers.GetBalanceHandler)
+		apiRoutes.GET("/transactions", handlers.GetLastTransactionsHandler)
 	}
 	log.Println("Старт сервера на порту 8080")
 	if err := router.Run(":8080"); err != nil {
