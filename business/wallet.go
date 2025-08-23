@@ -64,3 +64,12 @@ func GetWalletBalance(address string) (float64, error) {
 	}
 	return wallet.Balance, nil
 }
+
+// GetLastTransactions возвращает N последних транзакций
+func GetLastTransactions(count int) ([]database.Transaction, error) {
+	var transactions []database.Transaction
+	if err := database.DB.Order("timestamp desc").Limit(count).Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
