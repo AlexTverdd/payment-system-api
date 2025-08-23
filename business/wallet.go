@@ -55,3 +55,12 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 		return nil
 	})
 }
+
+// GetWalletBalance возвращает баланс кошелька по адресу
+func GetWalletBalance(address string) (float64, error) {
+	var wallet database.Wallet
+	if err := database.DB.Where("address = ?", address).First(&wallet).Error; err != nil {
+		return 0, err
+	}
+	return wallet.Balance, nil
+}
