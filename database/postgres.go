@@ -1,6 +1,9 @@
 package database
 
 import (
+	"crypto/rand"
+	"encoding/hex"
+	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -26,4 +29,15 @@ func Migrate() {
 		log.Fatalf("Миграция базы данных не удалась %v", err)
 	}
 	log.Println("Миграция базы данных успешна")
+}
+
+// generateWalletAddress генерирует адресс
+func generateWalletAddress() (string, error) {
+	bytes := make([]byte, 32)
+
+	_, err := rand.Read((bytes))
+	if err != nil {
+		return "", fmt.Errorf("ошибка при чтении случайных байт: %w", err)
+	}
+	return hex.EncodeToString(bytes), nil
 }
