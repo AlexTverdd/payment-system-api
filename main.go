@@ -32,10 +32,10 @@ func main() {
 	database.Migrate()
 	database.InitialSetup()
 
-	//Настройка Gin
+	// Настройка Gin
 	router := gin.Default()
 
-	//Группировка маршрутов
+	// Группировка маршрутов
 	apiRoutes := router.Group("/api")
 	{
 		apiRoutes.POST("/send", handlers.SendHandler)

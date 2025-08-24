@@ -13,7 +13,7 @@ import (
 // Содержит уникальный адрес и текущий баланс.
 type Wallet struct {
 	gorm.Model
-	Address string  `gorm:"unique;not null"` // Address уникальный адрес кошелька, используемый при идентефикации
+	Address string  `gorm:"unique;not null"` // Address уникальный адрес кошелька, используемый при идентификации
 	Balance float64 //Balance текущий баланс кошелька
 }
 

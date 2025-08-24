@@ -25,19 +25,24 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 		if err := tx.Where("address = ?", fromAddress).First(&fromWallet).Error; err != nil {
 			return errors.New("кошелек отправителя не найден")
 		}
+
 		if err := tx.Where("address = ?", toAddress).First(&toWallet).Error; err != nil {
 			return errors.New("кошелек получателя не найден")
 		}
+
 		// Проверка баланса
 		if fromWallet.Balance < amount {
 			return errors.New("недостаточно средств")
 		}
+
 		if amount <= 0 {
 			return errors.New("сумма должна быть положительной")
 		}
+
 		if fromAddress == toAddress {
 			return errors.New("нельзя отправлять деньги на тот же адрес")
 		}
+
 		// Обновление баланса
 		fromWallet.Balance -= amount
 		toWallet.Balance += amount
