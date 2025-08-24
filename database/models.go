@@ -18,17 +18,12 @@ type Wallet struct {
 
 // Transaction представляет собой модель транзакции в базе данных
 type Transaction struct {
-	gorm.Model
-	//FromAddress адрес кошелька отправителя
-	FromAddress string
-	//ToAddress адрес кошелька получателя
-	ToAddress string
-	//Amount сумма перевода
-	Amount float64
-	//Timestamp - время создания транзакции.
-	Timestamp time.Time
-	//UUID уникальный идентификатор транзакции
-	UUID string `gorm:"unique;not null"`
+	ID          uint      `gorm:"primaryKey" json:"id"`
+	FromAddress string    `json:"from_address"`
+	ToAddress   string    `json:"to_address"`
+	Amount      float64   `json:"amount"`
+	Timestamp   time.Time `json:"timestamp"`
+	UUID        string    `gorm:"unique;not null" json:"uuid"`
 }
 
 // BeforeCreate - метод, который автоматически генерирует уникальный UUID и
