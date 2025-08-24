@@ -6,10 +6,14 @@ import (
 	"testing"
 )
 
-// dsn - строка подключения к тестовой базе данных
+// testDSN содержит строку подключения к тестовой базе данных.
+// Используется для инициализации соединения в тестах.
 const testDSN = "host=127.0.0.1 user=testuser password=testpass dbname=testdb port=5433 sslmode=disable"
 
-// TestMain используется для настройки и очистки ресурсов для тестов
+// TestMain выполняет подготовку тестового окружения.
+// Она подключается к тестовой базе данных, выполняет миграции
+// и затем запускает все тесты.
+// После завершения тестов происходит завершение программы с соответствующим кодом выхода.
 func TestMain(m *testing.M) {
 	ConnectDB(testDSN)
 	if DB == nil {
@@ -23,7 +27,9 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-// TestConnectAndMigrate проверяет, что соединение с БД и миграции работают без ошибок
+// TestInitialSetup проверяет работу функции InitialSetup.
+// Перед вызовом InitialSetup база данных должна быть пустой по таблице Wallet.
+// После вызова InitialSetup должно создаться ровно 10 кошельков.
 func TestConnectAndMigrate(t *testing.T) {
 	if DB == nil {
 		t.Fatalf("Переменная DB не была инициализирована в TestMain.")

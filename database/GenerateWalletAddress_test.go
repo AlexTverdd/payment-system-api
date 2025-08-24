@@ -4,7 +4,11 @@ import (
 	"testing"
 )
 
-// TestGenerateWalletAddress проверяет, что функция генерирует уникальные адреса правильной длины
+// TestGenerateWalletAddress проверяет работу функции generateWalletAddress.
+// Тест выполняет следующие проверки:
+//   - Генерируются два адреса без ошибок.
+//   - Адреса являются уникальными (не совпадают).
+//   - Длина каждого адреса соответствует ожидаемой (64 символа).
 func TestGenerateWalletAddress(t *testing.T) {
 	// Генерируем два адреса
 	address1, err1 := generateWalletAddress()
