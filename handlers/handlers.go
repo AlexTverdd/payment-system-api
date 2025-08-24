@@ -15,7 +15,7 @@ import (
 type SendRequest struct {
 	From   string  `json:"from" binding:"required"`
 	To     string  `json:"to" binding:"required"`
-	Amount float64 `json:"amount" binding:"required"`
+	Amount float64 `json:"amount"`
 }
 
 // SendHandler обрабатывает POST /api/send
@@ -23,23 +23,37 @@ type SendRequest struct {
 func SendHandler(c *gin.Context) {
 	var req SendRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"ошибка": "Неверное тело запроса", "подробно": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"ошибка":   "Неверное тело запроса",
+			"подробно": err.Error(),
+		})
 		return
 	}
 
 	err := business.SendMoney(req.From, req.To, req.Amount)
 	if err != nil {
-		if err.Error() == "недостаточно средств" {
-			c.JSON(http.StatusPaymentRequired, gin.H{"ошибка": "Недостаточно средств"})
+		// таблица соответствий бизнес-ошибок к HTTP-кодам
+		errorMap := map[string]int{
+			"недостаточно средств":                     http.StatusPaymentRequired,
+			"кошелек отправителя не найден":            http.StatusNotFound,
+			"кошелек получаетеля не найден":            http.StatusNotFound,
+			"сумма должна быть положительной":          http.StatusBadRequest,
+			"нельзя отправлять деньги на тот же адрес": http.StatusBadRequest,
+		}
+
+		if code, ok := errorMap[err.Error()]; ok {
+			c.JSON(code, gin.H{"ошибка": err.Error()})
 			return
 		}
-		if err.Error() == "кошелек отправителя не найден" || err.Error() == "кошелек получаетеля не найден" {
-			c.JSON(http.StatusNotFound, gin.H{"ошибка": err.Error()})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"ошибка": "Транзакция неуспешна", "детали": err.Error()})
+
+		// всё остальное — внутренняя ошибка
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"ошибка": "Транзакция неуспешна",
+			"детали": err.Error(),
+		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"сообщение": "Транзакция успешна"})
 }
 
