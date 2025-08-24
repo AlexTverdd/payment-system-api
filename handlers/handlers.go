@@ -31,9 +31,7 @@ func SendHandler(c *gin.Context) {
 	var req SendRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"ошибка":   "Неверное тело запроса",
-			"подробно": err.Error(),
-		})
+			"ошибка": "Неверное тело запроса", "подробно": err.Error()})
 		return
 	}
 
@@ -55,9 +53,7 @@ func SendHandler(c *gin.Context) {
 
 		// всё остальное — внутренняя ошибка
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"ошибка": "Транзакция неуспешна",
-			"детали": err.Error(),
-		})
+			"ошибка": "Транзакция неуспешна", "детали": err.Error()})
 		return
 	}
 
@@ -80,7 +76,7 @@ func GetBalanceHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"ошибка": "Не удалось получить баланс", "детали": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"adress": address, "balance": balance})
+	c.JSON(http.StatusOK, gin.H{"адрес": address, "баланс": balance})
 }
 
 // GetLastTransactionsHandler обрабатывает GET /api/transactions?count=N.
@@ -97,7 +93,7 @@ func GetLastTransactionsHandler(c *gin.Context) {
 
 	transactions, err := business.GetLastTransactions(count)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"ошибка": "Неудалось получить транзакции"})
+		c.JSON(http.StatusInternalServerError, gin.H{"ошибка": "Не удалось получить транзакции"})
 		return
 	}
 	c.JSON(http.StatusOK, transactions)
