@@ -1,4 +1,5 @@
 // Package database содержит функции и модели для работы с базой данных.
+// Подключение к базе данных, миграции и начальную настройку.
 package database
 
 import (
@@ -12,10 +13,8 @@ import (
 // Содержит уникальный адрес и текущий баланс.
 type Wallet struct {
 	gorm.Model
-	// Address уникальный адрес кошелька, используемый при идентефикации
-	Address string `gorm:"unique;not null"`
-	//Balance текущий баланс кошелька
-	Balance float64
+	Address string  `gorm:"unique;not null"` // Address уникальный адрес кошелька, используемый при идентефикации
+	Balance float64 //Balance текущий баланс кошелька
 }
 
 // Transaction представляет собой модель транзакции в базе данных

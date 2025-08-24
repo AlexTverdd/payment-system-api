@@ -26,7 +26,7 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 			return errors.New("кошелек отправителя не найден")
 		}
 		if err := tx.Where("address = ?", toAddress).First(&toWallet).Error; err != nil {
-			return errors.New("кошелек получаетеля не найден")
+			return errors.New("кошелек получателя не найден")
 		}
 		// Проверка баланса
 		if fromWallet.Balance < amount {
@@ -49,7 +49,7 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 			return err
 		}
 
-		//Запись транзакции
+		// Запись транзакции
 		transaction := database.Transaction{
 			FromAddress: fromAddress,
 			ToAddress:   toAddress,

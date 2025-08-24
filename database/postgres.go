@@ -1,3 +1,5 @@
+// Package database содержит функции и модели для работы с базой данных.
+// Подключение к базе данных, миграции и начальную настройку.
 package database
 
 import (
@@ -10,9 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// DB глобальная переменная для подключения к базе данных
 var DB *gorm.DB
 
-// ConnectDB устанавливает соединение с базой данных
+// ConnectDB устанавливает соединение с базой данных Postgres.
+// Параметр dsn — строка подключения к базе данных.
+// В случае ошибки завершает работу программы.
 func ConnectDB(dsn string) {
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -22,7 +27,9 @@ func ConnectDB(dsn string) {
 	log.Println("Подключение к базе данных выполнено успешно")
 }
 
-// Migrate создает таблицы если они не существуют
+// Migrate выполняет  миграцию базы данных.
+// Создает таблицы Wallet и Transaction, если они ещё не существуют.
+// При ошибке завершает работу программы.
 func Migrate() {
 	err := DB.AutoMigrate(&Wallet{}, &Transaction{})
 	if err != nil {
@@ -31,17 +38,21 @@ func Migrate() {
 	log.Println("Миграция базы данных успешна")
 }
 
-// generateWalletAddress генерирует адрес
+// generateWalletAddress генерирует уникальный адрес для кошелька.
+// Возвращает строку в hex формате или ошибку при генерации.
 func generateWalletAddress() (string, error) {
 	bytes := make([]byte, 32)
 
-	_, err := rand.Read((bytes))
+	_, err := rand.Read(bytes)
 	if err != nil {
 		return "", fmt.Errorf("ошибка при чтении случайных байт: %w", err)
 	}
 	return hex.EncodeToString(bytes), nil
 }
 
+// InitialSetup создает начальные кошельки в базе данных.
+// Если кошельки уже существуют, выводит их количество.
+// Если нет — создаёт 10 кошельков с балансом 100.0 каждый.
 func InitialSetup() {
 	var count int64
 	DB.Model(&Wallet{}).Count(&count)
