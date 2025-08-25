@@ -41,7 +41,7 @@ Test task for Infotecs — REST API на Go для платёжной систе
    
 2. Установить зависимости:
     ```bash
-go mod tidy
+    go mod tidy
 
 3. Создать базу данных
 
@@ -51,7 +51,7 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/payment_system?sslmode=
 
 5. Запустить сервис 
     ```bash
-go run main.go
+    go run main.go
 
 6. Сервис будет доступен по адресу http://localhost:8080.
 
@@ -59,6 +59,6 @@ go run main.go
 
 1. Собрать и запустить контейнеры:
     ```bash
-docker-compose up --build
+    docker-compose up --build
 
 2. После запуска апи будет доступен по адресу http://localhost:8080.
