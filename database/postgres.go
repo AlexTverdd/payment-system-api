@@ -66,7 +66,7 @@ func InitialSetup() {
 			}
 			wallets[i] = Wallet{
 				Address: address,
-				Balance: 100.0,
+				Balance: 10000,
 			}
 		}
 		if err := DB.Create(&wallets).Error; err != nil {
