@@ -11,6 +11,7 @@ import (
 const testDSN = "host=127.0.0.1 user=testuser password=testpass dbname=testdb port=5433 sslmode=disable"
 
 // TestMain выполняет подготовку тестового окружения.
+
 // Она подключается к тестовой базе данных, выполняет миграции
 // и затем запускает все тесты.
 // После завершения тестов происходит завершение программы с соответствующим кодом выхода.
@@ -28,6 +29,7 @@ func TestMain(m *testing.M) {
 }
 
 // TestInitialSetup проверяет работу функции InitialSetup.
+//
 // Перед вызовом InitialSetup база данных должна быть пустой по таблице Wallet.
 // После вызова InitialSetup должно создаться ровно 10 кошельков.
 func TestConnectAndMigrate(t *testing.T) {

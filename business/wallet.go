@@ -1,4 +1,6 @@
 // Package business содержит бизнес-логику платёжной системы.
+// Он предоставляет функции для перевода средств между кошельками,
+// получения баланса и списка последних транзакций.
 package business
 
 import (
@@ -10,17 +12,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// TransactionResponse - это модель, которую мы будем возвращать в API,
-// с float64 для суммы.
+// TransactionResponse представляет транзакцию,
+// возвращаемую в API. В отличие от модели базы данных,
+// сумма хранится в виде float64.
 type TransactionResponse struct {
-	FromAddress string    `json:"from_address"`
-	ToAddress   string    `json:"to_address"`
-	Amount      float64   `json:"amount"` // float64 для API
-	Timestamp   time.Time `json:"timestamp"`
-	UUID        string    `json:"uuid"`
+	FromAddress string    `json:"from_address"` // адрес отправителя
+	ToAddress   string    `json:"to_address"`   // адрес получателя
+	Amount      float64   `json:"amount"`       // сумма перевода
+	Timestamp   time.Time `json:"timestamp"`    // время создания транзакции
+	UUID        string    `json:"uuid"`         // уникальный идентификатор транзакции
 }
 
 // SendMoney выполняет транзакцию перевода средств с одного кошелька на другой.
+//
 // Проверяет наличие кошельков, достаточность средств и корректность суммы.
 // Все операции выполняются в одной транзакции GORM.
 // Возможные ошибки:
@@ -81,6 +85,8 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 }
 
 // GetWalletBalance возвращает текущий баланс кошелька по адресу.
+//
+// Баланс возвращается в виде float64.
 // Возвращает ошибку, если кошелек не найден.
 func GetWalletBalance(address string) (float64, error) {
 	var wallet database.Wallet
@@ -91,6 +97,7 @@ func GetWalletBalance(address string) (float64, error) {
 }
 
 // GetLastTransactions возвращает последние N транзакций,
+//
 // отсортированные по времени создания в порядке убывания.
 func GetLastTransactions(count int) ([]TransactionResponse, error) {
 	var transactionsDB []database.Transaction

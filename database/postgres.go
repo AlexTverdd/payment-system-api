@@ -16,6 +16,7 @@ import (
 var DB *gorm.DB
 
 // ConnectDB устанавливает соединение с базой данных Postgres.
+//
 // Параметр dsn — строка подключения к базе данных.
 // В случае ошибки завершает работу программы.
 func ConnectDB(dsn string) {
@@ -28,6 +29,7 @@ func ConnectDB(dsn string) {
 }
 
 // Migrate выполняет  миграцию базы данных.
+//
 // Создает таблицы Wallet и Transaction, если они ещё не существуют.
 // При ошибке завершает работу программы.
 func Migrate() {
@@ -39,6 +41,7 @@ func Migrate() {
 }
 
 // generateWalletAddress генерирует уникальный адрес для кошелька.
+//
 // Возвращает строку в hex формате или ошибку при генерации.
 func generateWalletAddress() (string, error) {
 	bytes := make([]byte, 32)
@@ -51,8 +54,9 @@ func generateWalletAddress() (string, error) {
 }
 
 // InitialSetup создает начальные кошельки в базе данных.
+//
 // Если кошельки уже существуют, выводит их количество.
-// Если нет — создаёт 10 кошельков с балансом 100.0 каждый.
+// Если нет — создаёт 10 кошельков с балансом 10000 каждый.
 func InitialSetup() {
 	var count int64
 	DB.Model(&Wallet{}).Count(&count)

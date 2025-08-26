@@ -1,4 +1,5 @@
 // Package handlers содержит HTTP-обработчики для API платёжной системы.
+// Он реализует конечные точки на базе фреймворка Gin.
 package handlers
 
 import (
@@ -20,6 +21,7 @@ type SendRequest struct {
 }
 
 // SendHandler обрабатывает POST /api/send.
+//
 // Принимает JSON с From, To и Amount и выполняет транзакцию через бизнес-логику.
 // Возвращает:
 // - 200 OK при успешной транзакции
@@ -61,6 +63,7 @@ func SendHandler(c *gin.Context) {
 }
 
 // GetBalanceHandler обрабатывает GET /api/wallet/{address}/balance.
+//
 // Возвращает баланс указанного кошелька.
 // Если кошелек не найден — 404 Not Found.
 // При внутренних ошибках — 500 Internal Server Error.
@@ -80,6 +83,7 @@ func GetBalanceHandler(c *gin.Context) {
 }
 
 // GetLastTransactionsHandler обрабатывает GET /api/transactions?count=N.
+//
 // Возвращает последние N транзакций.
 // Если параметр count некорректный — 400 Bad Request.
 // При внутренних ошибках — 500 Internal Server Error.
