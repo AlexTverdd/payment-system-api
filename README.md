@@ -70,7 +70,7 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/payment_system?sslmode=
 
 2. Пример успешного ответа 
 
-Запрос POST http://localhost:8080/api/send 
+Запрос POST /api/send 
 
 Тело запроса 
 ```json
@@ -138,7 +138,7 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/payment_system?sslmode=
 
 2. Пример успешного ответа 
 
-Запрос GET http://localhost:8080//api/transactions?count=2
+Запрос GET /api/transactions?count=2
 
 Ответ: Статус 200 OK
   ```json
