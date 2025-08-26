@@ -20,7 +20,7 @@ type Wallet struct {
 // Transaction представляет собой модель транзакции в базе данных
 // Содержит адрес отправителя, адрес получателя, сумму, временную метку и UUID.
 type Transaction struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`        // идентификатор записи
+	ID          uint      `gorm:"primaryKey" json:"-"`         // идентификатор записи
 	FromAddress string    `json:"from_address"`                // адрес отправителя
 	ToAddress   string    `json:"to_address"`                  // адрес получателя
 	Amount      int64     `json:"amount"`                      // сумма перевода

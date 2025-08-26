@@ -13,7 +13,6 @@ import (
 // TransactionResponse - это модель, которую мы будем возвращать в API,
 // с float64 для суммы.
 type TransactionResponse struct {
-	ID          uint      `json:"id"`
 	FromAddress string    `json:"from_address"`
 	ToAddress   string    `json:"to_address"`
 	Amount      float64   `json:"amount"` // float64 для API
