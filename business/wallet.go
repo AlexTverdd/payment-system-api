@@ -3,11 +3,23 @@ package business
 
 import (
 	"errors"
+	"time"
 
 	"payment_system_api/database"
 
 	"gorm.io/gorm"
 )
+
+// TransactionResponse - это модель, которую мы будем возвращать в API,
+// с float64 для суммы.
+type TransactionResponse struct {
+	ID          uint      `json:"id"`
+	FromAddress string    `json:"from_address"`
+	ToAddress   string    `json:"to_address"`
+	Amount      float64   `json:"amount"` // float64 для API
+	Timestamp   time.Time `json:"timestamp"`
+	UUID        string    `json:"uuid"`
+}
 
 // SendMoney выполняет транзакцию перевода средств с одного кошелька на другой.
 // Проверяет наличие кошельков, достаточность средств и корректность суммы.
@@ -19,6 +31,7 @@ import (
 // - "сумма должна быть положительной"
 // - "нельзя отправлять деньги на тот же адрес"
 func SendMoney(fromAddress, toAddress string, amount float64) error {
+	amountAsInteger := int64(amount * 100)
 	return database.DB.Transaction(func(tx *gorm.DB) error {
 		var fromWallet, toWallet database.Wallet
 
@@ -31,11 +44,11 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 		}
 
 		// Проверка баланса
-		if fromWallet.Balance < amount {
+		if fromWallet.Balance < amountAsInteger {
 			return errors.New("недостаточно средств")
 		}
 
-		if amount <= 0 {
+		if amountAsInteger <= 0 {
 			return errors.New("сумма должна быть положительной")
 		}
 
@@ -44,8 +57,8 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 		}
 
 		// Обновление баланса
-		fromWallet.Balance -= amount
-		toWallet.Balance += amount
+		fromWallet.Balance -= amountAsInteger
+		toWallet.Balance += amountAsInteger
 
 		if err := tx.Save(&fromWallet).Error; err != nil {
 			return err
@@ -58,7 +71,7 @@ func SendMoney(fromAddress, toAddress string, amount float64) error {
 		transaction := database.Transaction{
 			FromAddress: fromAddress,
 			ToAddress:   toAddress,
-			Amount:      amount,
+			Amount:      amountAsInteger,
 		}
 		if err := tx.Create(&transaction).Error; err != nil {
 			return err
@@ -75,15 +88,27 @@ func GetWalletBalance(address string) (float64, error) {
 	if err := database.DB.Where("address = ?", address).First(&wallet).Error; err != nil {
 		return 0, err
 	}
-	return wallet.Balance, nil
+	return float64(wallet.Balance) / 100, nil
 }
 
 // GetLastTransactions возвращает последние N транзакций,
 // отсортированные по времени создания в порядке убывания.
-func GetLastTransactions(count int) ([]database.Transaction, error) {
-	var transactions []database.Transaction
-	if err := database.DB.Order("timestamp desc").Limit(count).Find(&transactions).Error; err != nil {
+func GetLastTransactions(count int) ([]TransactionResponse, error) {
+	var transactionsDB []database.Transaction
+	if err := database.DB.Order("timestamp desc").Limit(count).Find(&transactionsDB).Error; err != nil {
 		return nil, err
 	}
-	return transactions, nil
+
+	var transactionsAPI []TransactionResponse
+	for _, t := range transactionsDB {
+		transactionsAPI = append(transactionsAPI, TransactionResponse{
+			FromAddress: t.FromAddress,
+			ToAddress:   t.ToAddress,
+			Amount:      float64(t.Amount) / 100,
+			Timestamp:   t.Timestamp,
+			UUID:        t.UUID,
+		})
+	}
+
+	return transactionsAPI, nil
 }
